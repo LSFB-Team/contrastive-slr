@@ -1,3 +1,5 @@
 torch
 torchvision
 lightning
+git+https://github.com/ppoitier/sign-language-tools@dev
+lsfb-dataset
