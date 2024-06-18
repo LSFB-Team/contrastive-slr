@@ -1,1 +1,2 @@
-# contrastive-slr
+# Contrastive SLR
+
