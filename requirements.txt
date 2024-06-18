@@ -4,3 +4,4 @@ lightning
 torch
 torchmetrics
 torchvision
+lightning
