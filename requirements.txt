@@ -1,3 +1,6 @@
-torch
-torchvision
+einops
 lightning
+# sign-language-tools
+torch
+torchmetrics
+torchvision
