@@ -36,7 +36,7 @@ class PositionalEmbedding(nn.Module):
 class PoseViT(nn.Module):
     def __init__(
         self,
-        in_channels: int = 130,
+        in_channels: int = 150,
         out_channels: int = 1024,
         sequence_length: int = 64,
         n_layers: int = 8,
