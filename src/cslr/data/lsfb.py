@@ -8,7 +8,7 @@ from sign_language_tools.pose.transform import *
 
 
 def load_datasets(root: str, max_seq_len: int = 64, n_labels: int = 400):
-    transforms = {}
+    transforms = dict()
 
     transforms["train"] = TransformTuple(
         Compose(
@@ -31,6 +31,8 @@ def load_datasets(root: str, max_seq_len: int = 64, n_labels: int = 400):
     transforms["test"] = Compose(
         [
             Concatenate(["pose", "left_hand", "right_hand"]),
+            Padding(min_length=1),
+            TemporalRandomCrop(size=48),
             Padding(min_length=48, mode="constant"),
             Clip(),
             Split({"pose": 33, "left_hand": 21, "right_hand": 21}),
@@ -68,12 +70,12 @@ def _collate_fn(batch):
     return features, targets
 
 
-def load_dataloaders(datasets):
+def load_dataloaders(datasets, batch_size: int):
     return {
         x: DataLoader(
             datasets[x],
-            batch_size=32,
-            collate_fn=_collate_fn,
+            batch_size=batch_size,
+            collate_fn=_collate_fn if x == 'train' else None,
             shuffle=(x == "train"),
             num_workers=7,
         )
