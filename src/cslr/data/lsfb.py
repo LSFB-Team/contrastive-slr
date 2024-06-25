@@ -28,16 +28,14 @@ def load_datasets(root: str, max_seq_len: int = 64, n_labels: int = 400):
         )
     )
 
-    transforms["test"] = TransformTuple(
-        Compose(
-            [
-                Concatenate(["pose", "left_hand", "right_hand"]),
-                Padding(min_length=48, mode="constant"),
-                Clip(),
-                Split({"pose": 33, "left_hand": 21, "right_hand": 21}),
-                ApplyToAll(Flatten()),
-            ]
-        )
+    transforms["test"] = Compose(
+        [
+            Concatenate(["pose", "left_hand", "right_hand"]),
+            Padding(min_length=48, mode="constant"),
+            Clip(),
+            Split({"pose": 33, "left_hand": 21, "right_hand": 21}),
+            ApplyToAll(Flatten()),
+        ]
     )
 
     return {
