@@ -5,3 +5,4 @@ torch
 torchmetrics
 torchvision
 lightning
+pytorch-metric-learning
