@@ -4,3 +4,4 @@ logs/
 *.pyc
 DATA_PATH
 logs
+checkpoints
