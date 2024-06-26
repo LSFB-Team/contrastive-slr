@@ -1,12 +1,12 @@
 import lightning as pl
 from lightning.pytorch.loggers import TensorBoardLogger
 
-from cslr.data.lsfb import load_datasets, load_dataloaders
-from cslr.model.backbone.pose_vit import PoseViT
-from cslr.model.head.projection import ProjectionHead
-from cslr.trainer.contrastive import ContrastiveModule
-from cslr.utils import load_dataset_path
-from cslr.sampler import MultinomialBalancedSampler
+from data.lsfb import load_datasets, load_dataloaders
+from model.backbone.pose_vit import PoseViT
+from model.head.projection import ProjectionHead
+from trainer.contrastive import ContrastiveModule
+from utils import load_dataset_path
+from sampler import MultinomialBalancedSampler
 
 DATA_PATH = load_dataset_path(
     "/run/media/ppoitier/ppoitier/datasets/sign-languages/lsfb/isol"
