@@ -1,6 +1,6 @@
 import torch
 from torch import Tensor
-from torch.utils.data import DataLoader, default_collate
+from torch.utils.data import DataLoader, default_collate, Sampler
 
 from lsfb_dataset.datasets import LSFBIsolLandmarks, LSFBIsolConfig
 from sign_language_tools.common.transforms import *
@@ -70,13 +70,14 @@ def _collate_fn(batch):
     return features, targets
 
 
-def load_dataloaders(datasets, batch_size: int):
+def load_dataloaders(datasets, batch_size: int, sampler: Sampler | None = None):
     return {
         x: DataLoader(
             datasets[x],
             batch_size=batch_size,
             collate_fn=_collate_fn if x == 'train' else None,
-            shuffle=(x == "train"),
+            shuffle=(x == "train" and sampler is None),
+            sampler=sampler,
             num_workers=7,
         )
         for x in ["train", "test"]
