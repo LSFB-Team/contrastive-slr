@@ -10,38 +10,6 @@ datasets = load_datasets(DATA_ROOT)
 
 
 for elem in itertools.islice(datasets["train"], 5):
-    print(elem[1])
+    print(elem[0][0]["pose"].shape)
 
     # First video
-    player = VideoPlayer(DATA_ROOT, screenshot_dir="./screenshot", fps=50)
-
-    player.attach_pose("Pose", elem[0][0]["pose"], connections=UPPER_POSE_EDGES)
-    player.attach_pose("Left Hand", elem[0][0]["left_hand"], connections=HAND_EDGES)
-    player.attach_pose("Right Hand", elem[0][0]["right_hand"], connections=HAND_EDGES)
-
-    player.play()
-
-    # Second video
-
-    player = VideoPlayer(DATA_ROOT, screenshot_dir="./screenshot", fps=50)
-
-    player.attach_pose("Pose", elem[0][1]["pose"], connections=UPPER_POSE_EDGES)
-    player.attach_pose("Left Hand", elem[0][1]["left_hand"], connections=HAND_EDGES)
-    player.attach_pose("Right Hand", elem[0][1]["right_hand"], connections=HAND_EDGES)
-
-    player.play()
-
-    time.sleep(3)
-
-
-for elem in itertools.islice(datasets["test"], 5):
-    print(elem[1])
-
-    # First video
-    player = VideoPlayer(DATA_ROOT, screenshot_dir="./screenshot", fps=50)
-
-    player.attach_pose("Pose", elem[0]["pose"], connections=UPPER_POSE_EDGES)
-    player.attach_pose("Left Hand", elem[0]["left_hand"], connections=HAND_EDGES)
-    player.attach_pose("Right Hand", elem[0]["right_hand"], connections=HAND_EDGES)
-
-    player.play()
