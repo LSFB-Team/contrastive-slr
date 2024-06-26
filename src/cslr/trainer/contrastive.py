@@ -3,7 +3,8 @@ from torch import nn, optim
 import lightning as pl
 from pytorch_metric_learning.losses import SupConLoss
 
-from cslr.scheduler.linear_warmup import LinearSchedulerWithWarmup
+from scheduler.linear_warmup import LinearSchedulerWithWarmup
+from utils import get_input_mask
 
 
 class ContrastiveModule(pl.LightningModule):
@@ -15,28 +16,42 @@ class ContrastiveModule(pl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         features, labels = batch
-        x = torch.cat([features['pose'], features['left_hand'], features['right_hand']], dim=-1).float()
-        embeddings = self.backbone(x)
+        x = torch.cat(
+            [features["pose"], features["left_hand"], features["right_hand"]], dim=-1
+        ).float()
+
+        # Compute masks on the fly. Should be done in the dataloader
+        masks = get_input_mask(x)
+
+        embeddings = self.backbone(x, masks)
         projections = self.projector(embeddings)
         loss = self.criterion(projections, labels)
-        self.log('train_loss', loss, on_step=True, on_epoch=True)
+        self.log("train_loss", loss, on_step=True, on_epoch=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
         features, labels = batch
-        x = torch.cat([features['pose'], features['left_hand'], features['right_hand']], dim=-1).float()
-        embeddings = self.backbone(x)
+        x = torch.cat(
+            [features["pose"], features["left_hand"], features["right_hand"]], dim=-1
+        ).float()
+
+        # Compute masks on the fly. Should be done in the dataloader
+        masks = get_input_mask(x)
+
+        embeddings = self.backbone(x, masks)
         projections = self.projector(embeddings)
         loss = self.criterion(projections, labels)
-        self.log('val_loss', loss, on_step=True, on_epoch=True)
+        self.log("val_loss", loss, on_step=True, on_epoch=True)
 
     def configure_optimizers(self):
         optimizer = optim.AdamW(self.parameters(), lr=1e-3)
-        scheduler = LinearSchedulerWithWarmup(optimizer, n_warmup_steps=20, n_drop_steps=80, max_lr=1e-3)
+        scheduler = LinearSchedulerWithWarmup(
+            optimizer, n_warmup_steps=20, n_drop_steps=80, max_lr=1e-3
+        )
         return {
-            'optimizer': optimizer,
-            'lr_scheduler': {
-                'scheduler': scheduler,
-                'interval': 'epoch',
-            }
+            "optimizer": optimizer,
+            "lr_scheduler": {
+                "scheduler": scheduler,
+                "interval": "epoch",
+            },
         }
