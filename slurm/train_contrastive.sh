@@ -7,7 +7,7 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --gres="gpu:1"
 #SBATCH --mem-per-cpu=6144 
-#SBATCH --partition=debug-gpu
+#SBATCH --partition=gpu
 #
 #SBATCH --mail-user=jerome.fink@unamur.be
 #SBATCH --mail-type=ALL
