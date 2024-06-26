@@ -28,13 +28,20 @@ def main():
     sampler = load_sampler(datasets)
     dataloaders = load_dataloaders(datasets, batch_size=128, sampler=sampler)
 
-    backbone = ContrastiveModule.load_from_checkpoint(
-        "./checkpoints/epoch=99-step=15200.ckpt"
+    backbone = PoseViT(
+        in_channels=150, out_channels=1024, sequence_length=48, pool="clf_token"
     )
+    projector = ProjectionHead(in_channels=1024, out_channels=128, hidden_channels=512)
+
+    backbone = ContrastiveModule.load_from_checkpoint(
+        "./checkpoints/epoch=99-step=15200.ckpt",
+        backbone=backbone,
+        projector=projector,
+    ).backbone
 
     classif = ClassificationHead(in_channels=1024, out_channels=400)
 
-    module = ClassificationModule(backbone, classif)
+    module = ClassificationModule(backbone, classif, 400)
 
     logger = TensorBoardLogger("./logs/contrastive", name="cslr_classif")
     trainer = pl.Trainer(max_epochs=10, logger=logger, default_root_dir="./checkpoints")
