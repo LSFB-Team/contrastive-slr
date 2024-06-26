@@ -10,14 +10,14 @@ def load_dataset_path(default="./isol"):
     return default
 
 
-def get_input_mask(data):
+def get_input_mask(data, device):
     b, _, _ = data.shape
 
     # Summing on axes 2 as if all the values are 0 it means that the pose is not present
     mask = torch.sum(data, axis=2)
 
     # Adding element for the classification token
-    ones = torch.ones(b, 1)
+    ones = torch.ones(b, 1).to(device)
     mask = torch.cat([ones, mask], dim=1)
     mask = mask.bool()
 

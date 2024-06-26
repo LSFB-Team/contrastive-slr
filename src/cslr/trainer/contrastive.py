@@ -21,7 +21,7 @@ class ContrastiveModule(pl.LightningModule):
         ).float()
 
         # Compute masks on the fly. Should be done in the dataloader
-        masks = get_input_mask(x)
+        masks = get_input_mask(x, self.device)
 
         embeddings = self.backbone(x, masks)
         projections = self.projector(embeddings)
@@ -36,7 +36,7 @@ class ContrastiveModule(pl.LightningModule):
         ).float()
 
         # Compute masks on the fly. Should be done in the dataloader
-        masks = get_input_mask(x)
+        masks = get_input_mask(x, self.device)
 
         embeddings = self.backbone(x, masks)
         projections = self.projector(embeddings)
