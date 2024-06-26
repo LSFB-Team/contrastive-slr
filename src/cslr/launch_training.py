@@ -23,7 +23,7 @@ def main():
 
     module = ContrastiveModule(backbone, projector)
 
-    logger = TensorBoardLogger("../../logs/contrastive", name="cslr_subcon")
+    logger = TensorBoardLogger("./logs/contrastive", name="cslr_subcon")
     trainer = pl.Trainer(max_epochs=100, logger=logger)
     trainer.fit(
         module,
