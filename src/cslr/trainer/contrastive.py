@@ -44,9 +44,9 @@ class ContrastiveModule(pl.LightningModule):
         self.log("val_loss", loss, on_step=True, on_epoch=True)
 
     def configure_optimizers(self):
-        optimizer = optim.AdamW(self.parameters(), lr=1e-3)
+        optimizer = optim.AdamW(self.parameters(), lr=1e-4)
         scheduler = LinearSchedulerWithWarmup(
-            optimizer, n_warmup_steps=20, n_drop_steps=80, max_lr=1e-3
+            optimizer, n_warmup_steps=20, n_drop_steps=80, max_lr=1e-4
         )
         return {
             "optimizer": optimizer,
