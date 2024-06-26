@@ -34,7 +34,9 @@ def main():
     module = ContrastiveModule(backbone, projector)
 
     logger = TensorBoardLogger("./logs/contrastive", name="cslr_subcon")
-    trainer = pl.Trainer(max_epochs=100, logger=logger)
+    trainer = pl.Trainer(
+        max_epochs=100, logger=logger, default_root_dir="./checkpoints"
+    )
     trainer.fit(
         module,
         train_dataloaders=dataloaders["train"],
