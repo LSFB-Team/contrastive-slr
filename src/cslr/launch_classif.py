@@ -26,7 +26,7 @@ def load_sampler(datasets):
 def main():
     datasets = load_datasets(DATA_PATH)
     sampler = load_sampler(datasets)
-    dataloaders = load_dataloaders(datasets, batch_size=128, sampler=None)
+    dataloaders = load_dataloaders(datasets, batch_size=128, sampler=sampler)
 
     backbone = PoseViT(
         in_channels=150, out_channels=1024, sequence_length=48, pool="clf_token"
@@ -34,7 +34,7 @@ def main():
     projector = ProjectionHead(in_channels=1024, out_channels=128, hidden_channels=512)
 
     backbone = ContrastiveModule.load_from_checkpoint(
-        "./checkpoints/epoch=99-step=15200.ckpt",
+        "./checkpoints/epoch=149-step=14250.ckpt",
         backbone=backbone,
         projector=projector,
     ).backbone
