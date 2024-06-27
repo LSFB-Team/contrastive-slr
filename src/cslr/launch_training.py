@@ -24,7 +24,7 @@ def load_sampler(datasets):
 def main():
     datasets = load_datasets(DATA_PATH)
     sampler = load_sampler(datasets)
-    dataloaders = load_dataloaders(datasets, batch_size=512, sampler=sampler)
+    dataloaders = load_dataloaders(datasets, batch_size=512, sampler=None)
 
     backbone = PoseViT(
         in_channels=150, out_channels=1024, sequence_length=48, pool="clf_token"
