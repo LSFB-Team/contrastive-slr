@@ -24,7 +24,7 @@ def load_sampler(datasets):
 def main():
     datasets = load_datasets(DATA_PATH)
     sampler = load_sampler(datasets)
-    dataloaders = load_dataloaders(datasets, batch_size=320, sampler=sampler)
+    dataloaders = load_dataloaders(datasets, batch_size=512, sampler=sampler)
 
     backbone = PoseViT(
         in_channels=150, out_channels=1024, sequence_length=48, pool="clf_token"
@@ -35,7 +35,7 @@ def main():
 
     logger = TensorBoardLogger("./logs/contrastive", name="cslr_subcon")
     trainer = pl.Trainer(
-        max_epochs=100, logger=logger, default_root_dir="./checkpoints"
+        max_epochs=150, logger=logger, default_root_dir="./checkpoints"
     )
     trainer.fit(
         module,
