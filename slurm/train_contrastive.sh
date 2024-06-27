@@ -1,7 +1,7 @@
 #!/bin/bash
 # Submission script for Lucia
 #SBATCH --job-name=backbone_lsfb
-#SBATCH --time=05:00:00 # hh:mm:ss
+#SBATCH --time=07:00:00 # hh:mm:ss
 #
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=6
