@@ -44,7 +44,7 @@ def main():
     projector = ProjectionHead(in_channels=1024, out_channels=128, hidden_channels=512)
 
     backbone = ContrastiveModule.load_from_checkpoint(
-        "./checkpoints/epoch=149-step=14250.ckpt",
+        "./checkpoints/epoch=143-step=14112.ckpt",
         backbone=backbone,
         projector=projector,
     ).backbone
