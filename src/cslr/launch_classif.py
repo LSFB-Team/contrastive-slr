@@ -16,17 +16,27 @@ DATA_PATH = load_dataset_path(
 
 
 def load_sampler(datasets):
-    label_indices = [
+    train_label_indices = [
         datasets["train"].targets[inst_id] for inst_id in datasets["train"].instances
     ]
-    sampler = MultinomialBalancedSampler(label_indices, num_samples=50000)
-    return sampler
+    test_label_indices = [
+        datasets["test"].targets[inst_id] for inst_id in datasets["test"].instances
+    ]
+
+    samplers = dict()
+
+    samplers["train"] = MultinomialBalancedSampler(
+        train_label_indices, num_samples=50000
+    )
+    samplers["test"] = MultinomialBalancedSampler(test_label_indices, num_samples=50000)
+
+    return samplers
 
 
 def main():
     datasets = load_datasets(DATA_PATH)
-    sampler = load_sampler(datasets)
-    dataloaders = load_dataloaders(datasets, batch_size=128, sampler=None)
+    samplers = load_sampler(datasets)
+    dataloaders = load_dataloaders(datasets, batch_size=128, sampler=samplers["train"])
 
     backbone = PoseViT(
         in_channels=150, out_channels=1024, sequence_length=48, pool="clf_token"

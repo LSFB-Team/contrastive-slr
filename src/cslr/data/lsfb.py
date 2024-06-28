@@ -75,9 +75,9 @@ def load_dataloaders(datasets, batch_size: int, sampler: Sampler | None = None):
         x: DataLoader(
             datasets[x],
             batch_size=batch_size,
-            collate_fn=_collate_fn if x == 'train' else None,
+            collate_fn=_collate_fn if x == "train" else None,
             shuffle=(x == "train" and sampler is None),
-            sampler=sampler,
+            sampler=sampler if x == "train" else None,
             num_workers=7,
         )
         for x in ["train", "test"]
