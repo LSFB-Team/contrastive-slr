@@ -54,7 +54,7 @@ def main():
     module = ClassificationModule(backbone, classif, 400)
 
     logger = TensorBoardLogger("./logs/contrastive", name="cslr_classif")
-    trainer = pl.Trainer(max_epochs=10, logger=logger, default_root_dir="./checkpoints")
+    trainer = pl.Trainer(max_epochs=20, logger=logger, default_root_dir="./checkpoints")
     trainer.fit(
         module,
         train_dataloaders=dataloaders["train"],
