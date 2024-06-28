@@ -15,10 +15,16 @@ class ClassificationModule(pl.LightningModule):
         self.criterion = nn.CrossEntropyLoss()
 
         self.train_acc = Accuracy("multiclass", num_classes=n_classes)
+        self.train_balanced_acc = Accuracy(
+            "multiclass", num_classes=n_classes, average="macro"
+        )
         self.train_top5 = Accuracy("multiclass", num_classes=n_classes, top_k=5)
         self.train_top10 = Accuracy("multiclass", num_classes=n_classes, top_k=10)
 
         self.val_acc = Accuracy("multiclass", num_classes=n_classes)
+        self.val_balanced_acc = Accuracy(
+            "multiclass", num_classes=n_classes, average="macro"
+        )
         self.val_top5 = Accuracy("multiclass", num_classes=n_classes, top_k=5)
         self.val_top10 = Accuracy("multiclass", num_classes=n_classes, top_k=10)
 
@@ -39,9 +45,11 @@ class ClassificationModule(pl.LightningModule):
         self.train_acc(preds, labels)
         self.train_top5(logits, labels)
         self.train_top10(logits, labels)
+        self.train_balanced_acc(preds, labels)
         self.log("cls_train_acc", self.train_acc, on_epoch=True)
         self.log("cls_train_top5", self.train_top5, on_epoch=True)
         self.log("cls_train_top10", self.train_top10, on_epoch=True)
+        self.log("cls_train_balanced_acc", self.train_balanced_acc, on_epoch=True)
 
         return loss
 
@@ -62,9 +70,11 @@ class ClassificationModule(pl.LightningModule):
         self.val_acc(preds, labels)
         self.val_top5(logits, labels)
         self.val_top10(logits, labels)
+        self.val_balanced_acc(preds, labels)
         self.log("cls_val_acc", self.val_acc, on_epoch=True)
         self.log("cls_val_top5", self.val_top5, on_epoch=True)
         self.log("cls_val_top10", self.val_top10, on_epoch=True)
+        self.log("cls_val_balanced_acc", self.val_balanced_acc, on_epoch=True)
 
     def configure_optimizers(self):
         return optim.AdamW(self.parameters(), lr=1e-3)
