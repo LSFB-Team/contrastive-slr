@@ -82,3 +82,7 @@ def load_dataloaders(datasets, batch_size: int, sampler: Sampler | None = None):
         )
         for x in ["train", "test"]
     }
+
+
+def merge_input_modalities(x: dict[str, Tensor]) -> Tensor:
+    return torch.cat([x["pose"], x["left_hand"], x["right_hand"]], dim=-1).float()

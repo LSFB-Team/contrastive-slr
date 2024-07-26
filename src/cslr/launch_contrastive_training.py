@@ -1,7 +1,7 @@
 import lightning as pl
 from lightning.pytorch.loggers import TensorBoardLogger
 
-from data.lsfb import load_datasets, load_dataloaders
+from data.lsfb import load_datasets, load_dataloaders, merge_input_modalities
 from model.backbone.pose_vit import PoseViT
 from model.head.projection import ProjectionHead
 from trainer.contrastive import ContrastiveModule
@@ -31,7 +31,7 @@ def main():
     )
     projector = ProjectionHead(in_channels=1024, out_channels=128, hidden_channels=512)
 
-    module = ContrastiveModule(backbone, projector)
+    module = ContrastiveModule(backbone, projector, merge_input_modalities)
 
     logger = TensorBoardLogger("./logs/contrastive", name="cslr_subcon")
     trainer = pl.Trainer(

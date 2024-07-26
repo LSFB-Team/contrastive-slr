@@ -5,3 +5,4 @@ logs/
 DATA_PATH
 logs
 checkpoints
+mnist

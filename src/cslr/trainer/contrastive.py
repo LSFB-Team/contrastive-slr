@@ -8,37 +8,52 @@ from utils import get_input_mask
 
 
 class ContrastiveModule(pl.LightningModule):
-    def __init__(self, backbone: nn.Module, projector: nn.Module):
+    def __init__(
+        self,
+        backbone: nn.Module,
+        projector: nn.Module,
+        inpput_processor: callable = None,
+        generate_masks: bool = False,
+    ):
         super().__init__()
         self.backbone = backbone
         self.projector = projector
         self.criterion = SupConLoss()
+        self.input_processor = inpput_processor
+        self.mask = generate_masks
 
     def training_step(self, batch, batch_idx):
-        features, labels = batch
-        x = torch.cat(
-            [features["pose"], features["left_hand"], features["right_hand"]], dim=-1
-        ).float()
+        x, labels = batch
+
+        if self.input_processor is not None:
+            x = self.input_processor(x)
 
         # Compute masks on the fly. Should be done in the dataloader
-        masks = get_input_mask(x, self.device)
+        if self.mask:
+            masks = get_input_mask(x, self.device)
+            embeddings = self.backbone(x, masks)
 
-        embeddings = self.backbone(x, masks)
+        else:
+            embeddings = self.backbone(x)
+
         projections = self.projector(embeddings)
         loss = self.criterion(projections, labels)
         self.log("train_loss", loss, on_step=True, on_epoch=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
-        features, labels = batch
-        x = torch.cat(
-            [features["pose"], features["left_hand"], features["right_hand"]], dim=-1
-        ).float()
+        x, labels = batch
+        if self.input_processor is not None:
+            x = self.input_processor(x)
 
         # Compute masks on the fly. Should be done in the dataloader
-        masks = get_input_mask(x, self.device)
+        if self.mask:
+            masks = get_input_mask(x, self.device)
+            embeddings = self.backbone(x, masks)
 
-        embeddings = self.backbone(x, masks)
+        else:
+            embeddings = self.backbone(x)
+
         projections = self.projector(embeddings)
         loss = self.criterion(projections, labels)
         self.log("val_loss", loss, on_step=True, on_epoch=True)
