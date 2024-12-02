@@ -1,0 +1,6 @@
+{
+  "root": "/gpfs/scratch/acad/lsfb/datasets/lsfb_isol",
+  "out_dir": "/gpfs/scratch/acad/lsfb/out/cslr",
+  "vocab_size": 500,
+  "batch_size": 512
+}
