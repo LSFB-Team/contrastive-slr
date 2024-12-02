@@ -24,7 +24,7 @@ module load Python/3.10.4-GCCcore-11.3.0
 source /gpfs/home/acad/unamur-fac_info/ppoitier/envs/dl/bin/activate
 
 config_files=(
-  "../configs/example.json"
+  "../configs/original_posevit.json"
 )
 
 config_file=${config_files[0]}
