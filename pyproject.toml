@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "constrastive-slr"
+version = "0.0.1"
+authors = [
+    { name="Pierre Poitier", email="pierre.poitier@unamur.be" },
+    { name="Jérôme Fink", email="jerome.fink@unamur.be" },
+]
+description = "Constrastive Sign Language Recognition."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+]

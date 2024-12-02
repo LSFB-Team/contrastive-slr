@@ -1,0 +1,7 @@
+{
+  "debug": true,
+  "root": "/run/media/ppoitier/ppoitier/datasets/sign-languages/lsfb/isol",
+  "out_dir": "/run/media/ppoitier/ppoitier/output/debug",
+  "vocab_size": 500,
+  "batch_size": 8
+}

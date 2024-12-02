@@ -19,9 +19,9 @@ class ProjectionHead(nn.Module):
         )
 
     def forward(self, x: Tensor) -> Tensor:
-        # x of shape (B, L, C)
+        # x of shape (B, E)
         feat = self.projection(x)
 
         if self.normalize_output:
-            feat = nn.functional.normalize(feat, dim=1)
+            feat = nn.functional.normalize(feat, dim=-1)
         return feat
