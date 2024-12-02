@@ -2,6 +2,9 @@
 requires = ["setuptools>=68.0"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+py-modules = ['cslr']
+
 [project]
 name = "constrastive-slr"
 version = "0.0.1"
