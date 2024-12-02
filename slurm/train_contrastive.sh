@@ -31,5 +31,5 @@ config_file=${config_files[0]}
 
 nvidia-smi
 echo "Job start at $(date)"
-python ../src/launch_training.py --config-path="$config_file"
+python ../launch_training.py --config-path="$config_file"
 echo "Job end at $(date)"
