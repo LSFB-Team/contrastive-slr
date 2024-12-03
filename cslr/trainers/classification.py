@@ -41,9 +41,9 @@ class ClassificationModule(TrainerBase):
         self.val_metrics = ClassificationMetrics(n_classes)
 
     def training_step(self, batch, batch_idx):
-        features, masks, labels = batch
+        instance_id, (features, masks), labels = batch
         embeddings = self.backbone(features, masks)
-        logits = self.head(embeddings.detach())
+        logits = self.cls_head(embeddings.detach())
         cls_loss = self.criterion(logits, labels)
         self.log("cls_train_loss", cls_loss, on_step=True, on_epoch=True, prog_bar=True)
 
@@ -54,9 +54,9 @@ class ClassificationModule(TrainerBase):
         return cls_loss
 
     def validation_step(self, batch, batch_idx):
-        features, masks, labels = batch
+        instance_id, (features, masks), labels = batch
         embeddings = self.backbone(features, masks)
-        logits = self.head(embeddings.detach())
+        logits = self.cls_head(embeddings.detach())
         cls_loss = self.criterion(logits, labels)
         self.log("cls_val_loss", cls_loss, on_step=True, on_epoch=True, prog_bar=True)
 

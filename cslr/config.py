@@ -21,6 +21,14 @@ class ProjectionConfig:
 
 
 @dataclass(frozen=True)
+class ClassificationHeadConfig:
+    in_channels: int = 1024
+    out_channels: int = 500
+    n_epochs: int = 50
+    lr: float = 1e-3
+
+
+@dataclass(frozen=True)
 class ExperimentConfig:
     root: str
     out_dir: str
@@ -33,6 +41,7 @@ class ExperimentConfig:
     n_warmup_epochs: int = 20
     backbone = PoseViTConfig()
     projection = ProjectionConfig()
+    classification = ClassificationHeadConfig()
 
 
 def load_config(filepath: str) -> ExperimentConfig:

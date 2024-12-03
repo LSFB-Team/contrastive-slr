@@ -1,7 +1,7 @@
 #!/bin/bash
 # Submission script for Lucia
 #SBATCH --job-name=cslr-lsfb
-#SBATCH --time=06:00:00 # hh:mm:ss
+#SBATCH --time=24:00:00 # hh:mm:ss
 #
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
