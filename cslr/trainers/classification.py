@@ -4,6 +4,7 @@ from torchmetrics import MetricCollection
 from torchmetrics.classification import Accuracy, Recall, Precision
 
 from cslr.trainers.base import TrainerBase
+from cslr.losses import FocalLoss
 
 
 class ClassificationMetrics(MetricCollection):
@@ -32,7 +33,7 @@ class ClassificationModule(TrainerBase):
         super().__init__()
         self.backbone = backbone
         self.cls_head = classification_head
-        self.criterion = nn.CrossEntropyLoss()
+        self.criterion = FocalLoss(gamma=2.0)
 
         self.lr = lr
         self.save_hyperparameters('lr')
@@ -45,7 +46,7 @@ class ClassificationModule(TrainerBase):
         embeddings = self.backbone(features, masks)
         logits = self.cls_head(embeddings.detach())
         cls_loss = self.criterion(logits, labels)
-        self.log("cls_train_loss", cls_loss, on_step=True, on_epoch=True, prog_bar=True)
+        self.log("train_focal_loss", cls_loss, on_step=True, on_epoch=True)
 
         probs = logits.softmax(dim=-1)
         metrics = self.train_metrics(probs, labels)
@@ -58,7 +59,7 @@ class ClassificationModule(TrainerBase):
         embeddings = self.backbone(features, masks)
         logits = self.cls_head(embeddings.detach())
         cls_loss = self.criterion(logits, labels)
-        self.log("cls_val_loss", cls_loss, on_step=True, on_epoch=True, prog_bar=True)
+        self.log("val_focal_loss", cls_loss, on_step=True, on_epoch=True)
 
         probs = logits.softmax(dim=-1)
         metrics = self.val_metrics(probs, labels)
