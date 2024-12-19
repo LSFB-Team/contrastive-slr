@@ -23,6 +23,7 @@ class SLRWebDataset(Dataset):
     def __init__(self, url: str, transform=None, show_progress: bool = False):
         super().__init__()
         self.transform = transform
+        self.instance_ids: list[str] = []
         self.samples: list[dict] = []
         web_dataset = wds.DataPipeline(
             wds.SimpleShardList(url),
@@ -33,6 +34,7 @@ class SLRWebDataset(Dataset):
         )
         for sample in tqdm(web_dataset, disable=not show_progress, unit=" samples"):
             self.samples.append(sample)
+            self.instance_ids.append(sample['__key__'])
 
     def __len__(self):
         return len(self.samples)
@@ -52,7 +54,7 @@ def default_transforms(mode: str = "training"):
         return Compose(
             [
                 Concatenate(["upper_pose", "left_hand", "right_hand"]),
-                TemporalCrop(size=64),
+                TemporalCrop(size=64, location='start'),
                 Clip(),
                 Flatten(),
                 Padding(min_length=64, mode="constant", return_mask=True),
@@ -68,7 +70,7 @@ def default_transforms(mode: str = "training"):
                 Randomize(HorizontalFlip(), probability=0.3),
                 Randomize(RandomRotation2D(angle_range=(-0.3, 0.3)), probability=0.6),
                 Randomize(
-                    RandomTranslation(dx_range=(-0.1, 0.1), dy_range=(-0.1, 0.1)),
+                    RandomTranslation(dx_range=(-0.2, 0.2), dy_range=(-0.2, 0.2)),
                     probability=0.6,
                 ),
                 Randomize(RandomScale(min_scale=0.5, max_scale=1.5), probability=0.2),
@@ -86,10 +88,11 @@ def load_datasets(
 ):
     if transforms is None:
         transforms = {x: default_transforms(mode=x) for x in ["training", "validation", "testing"]}
-    return {
-        x: SLRWebDataset(urls[x], transforms[x], show_progress=True)
-        for x in ["training", "validation", "testing"]
-    }
+    datasets = {}
+    for mode in ["training", "validation", "testing"]:
+        print(f"-- loading {mode} dataset...", flush=True)
+        datasets[mode] = SLRWebDataset(urls[mode], transforms[mode], show_progress=True)
+    return datasets
 
 
 def load_dataloaders(

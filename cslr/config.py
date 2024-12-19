@@ -1,9 +1,8 @@
-from dataclasses import dataclass
+from pydantic import BaseModel
 import json
 
 
-@dataclass(frozen=True)
-class PoseViTConfig:
+class PoseViTConfig(BaseModel):
     in_channels: int = 130
     out_channels: int = 1024
     max_length: int = 64
@@ -12,24 +11,28 @@ class PoseViTConfig:
     pool: str = 'cls_token'
 
 
-@dataclass(frozen=True)
-class ProjectionConfig:
+class ProjectionConfig(BaseModel):
     in_channels: int = 1024
     hidden_channels: int = 1024
     out_channels: int = 128
     normalize_output: bool = True
 
 
-@dataclass(frozen=True)
-class ClassificationHeadConfig:
+class ClassificationHeadConfig(BaseModel):
     in_channels: int = 1024
+    hidden_channels: tuple[int] = (728,)
     out_channels: int = 500
-    n_epochs: int = 50
+    use_batch_norm: bool = True
+    n_epochs: int = 150
     lr: float = 1e-3
 
 
-@dataclass(frozen=True)
-class ExperimentConfig:
+class KNNConfig(BaseModel):
+    n_neighbors: int = 15
+    metric: str = 'cosine'
+
+
+class ExperimentConfig(BaseModel):
     root: str
     out_dir: str
     vocab_size: int
@@ -39,12 +42,13 @@ class ExperimentConfig:
     max_lr: float = 1e-4
     n_epochs: int = 100
     n_warmup_epochs: int = 20
-    backbone = PoseViTConfig()
-    projection = ProjectionConfig()
-    classification = ClassificationHeadConfig()
+    backbone: PoseViTConfig = PoseViTConfig()
+    projection: ProjectionConfig = ProjectionConfig()
+    classification: ClassificationHeadConfig = ClassificationHeadConfig()
+    knn: KNNConfig = KNNConfig()
 
 
 def load_config(filepath: str) -> ExperimentConfig:
     with open(filepath, 'r') as file:
         config_data = json.load(file)
-    return ExperimentConfig(**config_data)
+    return ExperimentConfig.model_validate(config_data)

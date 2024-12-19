@@ -1,25 +1,8 @@
 from torch import nn, optim
 
-from torchmetrics import MetricCollection
-from torchmetrics.classification import Accuracy, Recall, Precision
-
 from cslr.trainers.base import TrainerBase
 from cslr.losses import FocalLoss
-
-
-class ClassificationMetrics(MetricCollection):
-    def __init__(self, n_classes: int, **kwargs):
-        acc_args = dict(task="multiclass", num_classes=n_classes, ignore_index=-1)
-        metrics = {
-            "accuracy": Accuracy(**acc_args),
-            "top_3": Accuracy(top_k=3, **acc_args),
-            "top_5": Accuracy(top_k=5, **acc_args),
-            "top-10": Accuracy(top_k=10, **acc_args),
-            "macro_accuracy": Accuracy(average="macro", **acc_args),
-            "recall": Recall(average=None, **acc_args),
-            "precision": Precision(average=None, **acc_args),
-        }
-        super().__init__(metrics, **kwargs)
+from cslr.metrics import ClassificationMetrics
 
 
 class ClassificationModule(TrainerBase):
@@ -38,8 +21,8 @@ class ClassificationModule(TrainerBase):
         self.lr = lr
         self.save_hyperparameters('lr')
 
-        self.train_metrics = ClassificationMetrics(n_classes)
-        self.val_metrics = ClassificationMetrics(n_classes)
+        self.train_metrics = ClassificationMetrics('train/', n_classes)
+        self.val_metrics = ClassificationMetrics('val/', n_classes)
 
     def training_step(self, batch, batch_idx):
         instance_id, (features, masks), labels = batch

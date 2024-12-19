@@ -1,12 +1,12 @@
-import lightning as pl
 from pytorch_metric_learning.losses import SupConLoss
 import torch
 from torch import nn, optim
 
+from cslr.trainers.base import TrainerBase
 from cslr.schedulers.linear_warmup import LinearSchedulerWithWarmup
 
 
-class ContrastiveModule(pl.LightningModule):
+class ContrastiveModule(TrainerBase):
     def __init__(
         self,
         backbone: nn.Module,
