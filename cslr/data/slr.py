@@ -50,10 +50,17 @@ class SLRWebDataset(Dataset):
 
 
 def default_transforms(mode: str = "training"):
+    normalization_transforms = Compose([
+        DropCoordinates("z"),
+        NormalizeEdgeLengths(unitary_edge=(11, 12)),
+        CenterOnLandmarks((11, 12)),
+    ])
+
     if mode == "validation" or mode == "testing":
         return Compose(
             [
                 Concatenate(["upper_pose", "left_hand", "right_hand"]),
+                normalization_transforms,
                 TemporalCrop(size=64, location='start'),
                 Clip(),
                 Flatten(),
@@ -65,6 +72,7 @@ def default_transforms(mode: str = "training"):
         Compose(
             [
                 Concatenate(["upper_pose", "left_hand", "right_hand"]),
+                normalization_transforms,
                 TemporalRandomCrop(size=64),
                 Randomize(GaussianNoise(0.002), probability=0.6),
                 Randomize(HorizontalFlip(), probability=0.3),

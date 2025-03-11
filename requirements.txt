@@ -9,6 +9,7 @@ lightning
 pytorch-metric-learning
 scikit-learn
 tensorboard
+tqdm
 webdataset
 pytorch_metric_learning
 pydantic
